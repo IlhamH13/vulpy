@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    parameters {
+        choice(name: 'BUILD_TYPE', choices: ['Scan Only', 'Scan + Deploy'], description: 'Select build type')
+    }
     environment {
         SONAR_TOKEN = credentials('token_sonar')
     }
