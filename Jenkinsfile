@@ -29,7 +29,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                 sh 'pytest test'
+                 cd vulpy/test
                 pytest
                 '''
             }
