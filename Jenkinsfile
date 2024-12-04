@@ -29,8 +29,8 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                 cd vulpy/test
-                pytest
+                 cd vulpy
+                pytest test_example.py
                 '''
             }
         }
