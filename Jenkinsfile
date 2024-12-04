@@ -7,7 +7,6 @@ pipeline {
         stage('Check Environment') {
             steps {
                 sh '''
-                #!/bin/bash
                 if ! dpkg -s python3-venv > /dev/null 2>&1; then
                     echo "python3-venv is not installed. Installing now..."
                     sudo apt update && sudo apt install -y python3-venv
@@ -18,9 +17,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
-                #!/bin/bash
                 python3 -m venv venv
-                source venv/bin/activate
+                . venv/bin/activate
                 pip install -r requirements.txt
                 '''
             }
@@ -28,8 +26,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                #!/bin/bash
-                source venv/bin/activate
+                . venv/bin/activate
                 pytest
                 '''
             }
@@ -38,8 +35,7 @@ pipeline {
             steps {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
-                    #!/bin/bash
-                    source venv/bin/activate
+                    . venv/bin/activate
                     sonar-scanner \
                         -Dsonar.projectKey=vulpy \
                         -Dsonar.sources=. \
