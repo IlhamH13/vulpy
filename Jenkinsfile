@@ -31,6 +31,7 @@ pipeline {
                 sh '''
                 echo "Direktori Sekarang: $(pwd)"
                 ls -la
+                . venv/bin/activate
                 pytest test_example.py
             '''
             }
