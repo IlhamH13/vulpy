@@ -1,32 +1,47 @@
 pipeline {
     agent any
-    parameters {
-        choice(name: 'BUILD_TYPE', choices: ['Scan Only', 'Scan + Deploy'], description: 'Select build type')
-    }
     environment {
-        SONAR_TOKEN = credentials('token_sonar') // Set this in Jenkins credentials
+        SONAR_TOKEN = credentials('sonar_token')
     }
     stages {
+        stage('Check Environment') {
+            steps {
+                sh '''
+                if ! dpkg -s python3-venv > /dev/null 2>&1; then
+                    echo "python3-venv is not installed. Installing now..."
+                    sudo apt update && sudo apt install -y python3-venv
+                fi
+                '''
+            }
+        }
         stage('Install Dependencies') {
             steps {
-                sh 'python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt'
+                sh '''
+                python3 -m venv venv
+                source venv/bin/activate
+                pip install -r requirements.txt
+                '''
             }
         }
         stage('Run Tests') {
             steps {
-                sh 'pytest'
+                sh '''
+                source venv/bin/activate
+                pytest
+                '''
             }
         }
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') { // Match Jenkins SonarQube server name
-                    sh """
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                    source venv/bin/activate
                     sonar-scanner \
                         -Dsonar.projectKey=vulpy \
                         -Dsonar.sources=. \
-                        -Dsonar.host.url=http://localhost:9000 \
+                        -Dsonar.host.url=http://192.168.1.11:9000 \
                         -Dsonar.login=${SONAR_TOKEN}
-                    """
+                    '''
                 }
             }
         }
@@ -36,7 +51,6 @@ pipeline {
             }
             steps {
                 echo 'Deploying to staging...'
-                // Tambahkan script deployment di sini
             }
         }
     }
