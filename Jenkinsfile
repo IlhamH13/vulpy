@@ -29,9 +29,10 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                 cd vulpy
+                echo "Direktori Sekarang: $(pwd)"
+                ls -la
                 pytest test_example.py
-                '''
+            '''
             }
         }
         stage('SonarQube Analysis') {
