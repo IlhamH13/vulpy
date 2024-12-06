@@ -41,6 +41,7 @@ pipeline {
                 withSonarQubeEnv('SonarQube') {
                     sh '''
                     . venv/bin/activate
+                    export PATH=/home/devsecops/sonar-scanner-4.8.0.2856-linux/bin:$PATH
                     sonar-scanner \
                         -Dsonar.projectKey=vulpy \
                         -Dsonar.sources=. \
