@@ -49,24 +49,6 @@ pipeline {
                 //Menggunakan `pytest` pada file `test_example.py`.
             }
         }
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                    . venv/bin/activate
-                    export PATH=/home/devsecops/sonar-scanner-4.8.0.2856-linux/bin:$PATH
-                    sonar-scanner \
-                        -Dsonar.projectKey=vulpy \
-                        -Dsonar.sources=. \
-                        -Dsonar.host.url=http://192.168.1.11:9000 \
-                        -Dsonar.login=${SONAR_TOKEN}
-                    '''
-                    //Mengaktifkan virtual environment dan menjalankan analisis SonarQube
-                    //Menggunakan `sonar-scanner`. Analisis dilakukan untuk proyek `vulpy`
-                    //Dengan konfigurasi host dan token autentikasi yang sudah ditentukan.
-                }
-            }
-        }
         stage('Deploy to Staging') {
             when {
                 expression { params.BUILD_TYPE == 'Scan + Deploy' }
